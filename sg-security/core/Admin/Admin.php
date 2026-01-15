@@ -33,6 +33,7 @@ class Admin {
 		'mks_shortcodes_simple_line_icons', // Meks Flexible Shortcodes.
 		'onthego-admin-styles', // Toolset Types
 		'foogra-icons', // Foogra Theme
+		'elegant', // Elegant Icons-set
 	);
 
 	/**
@@ -131,6 +132,15 @@ class Admin {
 		wp_enqueue_script(
 			'sg-security-admin',
 			\SG_Security\URL . '/assets/js/main.min.js',
+			array( 'jquery' ), // Dependencies.
+			\SG_Security\VERSION,
+			true
+		);
+
+		// Enqueue admin nonce script.
+		wp_enqueue_script(
+			'sg-security-admin-nonce',
+			\SG_Security\URL . '/assets/js/admin_nonce.js',
 			array( 'jquery' ), // Dependencies.
 			\SG_Security\VERSION,
 			true
@@ -238,6 +248,10 @@ class Admin {
 
 		echo '<script>window.addEventListener("load", function(){ SGSecurity.init({page: SGSecurity.PAGE.' . esc_html( $id ) . ',config:' . wp_json_encode( $data ) . '})});</script>';
 		echo '<style>.toplevel_page_sg-security.menu-top .wp-menu-image img { width:20px; } </style>';
+
+		// Adds WP admin nonce.
+		$sgs_admin_nonce = wp_create_nonce( 'sgs_clear_logs' );
+		echo '<script>window.SGSecurityAdminNonce = ' . wp_json_encode( $sgs_admin_nonce ) . ';</script>';
 	}
 
 	/**

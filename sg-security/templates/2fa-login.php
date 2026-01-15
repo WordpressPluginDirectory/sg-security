@@ -12,6 +12,10 @@
 <style>.login-action- > div#login:first-of-type{ display: none; } .login-action- > div#login:nth-last-of-type(2){ display: block !important; } </style>
 <?php endif ?>
 
+<?php if ( is_plugin_active( 'memberpress/memberpress.php' ) && ! $args['is_wp_login'] ) : ?>
+<style>.login-action- > div#login:first-of-type{ display: block; } </style>
+<?php endif ?>
+
 <?php if ( ! empty( $args['error'] ) ) : ?>
 	<div id="login_error"><strong><?php echo esc_html( $args['error'] ); ?></strong><br /></div>
 <?php endif ?>

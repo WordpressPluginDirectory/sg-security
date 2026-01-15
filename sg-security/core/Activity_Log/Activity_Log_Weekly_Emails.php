@@ -230,12 +230,16 @@ class Activity_Log_Weekly_Emails extends Activity_Log_Helper {
 	 */
 	private function get_total_human_stats( $start_date, $end_date ) {
 
+		// Get the translated Human label (Essere umano, Humano, etc).
+		$human_label = __( 'Human', 'sg-security' );
+
 		$query = $this->wpdb->prepare(
 			'SELECT COUNT(*) FROM `' . esc_sql( $this->wpdb->prefix . 'sgs_log_events' ) . "`
 				WHERE `action` = 'visit'
-				AND `visitor_type` = 'Human'
+				AND `visitor_type` = %s
 				AND `type` = 'unknown'
 				AND `ts` BETWEEN %s AND %s",
+			$human_label,
 			$start_date,
 			$end_date
 		);
@@ -255,13 +259,17 @@ class Activity_Log_Weekly_Emails extends Activity_Log_Helper {
 	 */
 	private function get_total_bots_stats( $start_date, $end_date ) {
 
+		// Get the translated Human label (Essere umano, Humano, etc).
+		$human_label = __( 'Human', 'sg-security' );
+
 		$query = $this->wpdb->prepare(
 			'SELECT COUNT(*) FROM `' . esc_sql( $this->wpdb->prefix . 'sgs_log_events' ) . "`
 				WHERE `action` = 'visit'
-				AND `visitor_type` <> 'Human'
+				AND `visitor_type` <> %s
 				AND `visitor_type` <> 'unknown'
 				AND `type` = 'unknown'
 				AND `ts` BETWEEN %s AND %s",
+			$human_label,
 			$start_date,
 			$end_date
 		);

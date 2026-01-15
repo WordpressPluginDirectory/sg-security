@@ -291,6 +291,9 @@ class Loader {
 		add_action( 'admin_notices', array( $this->custom_login_url, 'show_notices' ) );
 		add_filter( 'wpdiscuz_login_link', array( $this->custom_login_url, 'custom_login_for_wpdiscuz' ) );
 		add_action( 'wp_authenticate_user', array( $this->custom_login_url, 'maybe_block_custom_login' ) );
+		add_action( 'login_init', array( $this->custom_login_url, 'add_sgs_token_to_language_switcher' ) );
+		add_filter( 'um_custom_authenticate_error_codes', array( $this->custom_login_url, 'add_um_form_error_code' ) );
+		add_filter( 'um_submit_form_error', array( $this->custom_login_url, 'set_um_form_flag' ), 100, 2 );
 	}
 
 	/**
@@ -398,6 +401,17 @@ class Loader {
 		add_action( 'login_form_sgs2fa', array( $this->sg_2fa, 'validate_2fa_login' ) );
 		add_action( 'login_form_sgs2fabc', array( $this->sg_2fa, 'validate_2fabc_login' ) );
 		add_action( 'login_form_load_sgs2fabc', array( $this->sg_2fa, 'load_backup_codes_form' ) );
+
+		// Add Memberpress Pro integration.
+		if ( \is_plugin_active( 'memberpress/memberpress.php' ) ) {
+			if ( isset( $_POST['sgc2facode'] ) || isset( $_POST['sgc2fabackupcode'] ) ) { //phpcs:ignore
+				add_action( 'init', array( $this->sg_2fa, 'validate_2fa_login' ) );
+				add_action( 'init', array( $this->sg_2fa, 'validate_2fabc_login' ) );
+			}
+			if ( isset( $_GET['action'] ) &&  $_GET['action'] === 'load_sgs2fabc') { //phpcs:ignore
+				add_action( 'init', array( $this->sg_2fa, 'load_backup_codes_form' ) );
+			}
+		}
 	}
 
 	/**
@@ -442,7 +456,7 @@ class Loader {
 		// Set the cron job for deleting the old logs.
 		add_action( 'init', array( $this->activity_log, 'set_sgs_logs_cron' ) );
 		// Delete old logs if cron is disabled.
-		add_action( 'admin_init', array( $this->activity_log, 'delete_logs_on_admin_page' ) );
+		add_action( 'wp_ajax_sgs_clear_logs', array( $this->activity_log, 'delete_logs_on_admin_page' ) );
 		// Run the cron daily to check for expired logs and delete them.
 		add_action( 'siteground_security_clear_logs_cron', array( $this->activity_log, 'delete_old_activity_logs' ) );
 

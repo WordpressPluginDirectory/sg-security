@@ -339,7 +339,7 @@ if ( ! class_exists( 'SiteGround_Data/Settings' ) ) {
 			);
 
 			// Make a request to the homepage.
-			$response = wp_remote_get( get_home_url() );
+			$response = wp_safe_remote_get( get_home_url() );
 
 			// Get the host header from the response.
 			$host_header = wp_remote_retrieve_header( $response, 'X-Powered-By' );

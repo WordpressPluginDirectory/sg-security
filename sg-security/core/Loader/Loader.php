@@ -403,7 +403,7 @@ class Loader {
 		add_action( 'login_form_load_sgs2fabc', array( $this->sg_2fa, 'load_backup_codes_form' ) );
 
 		// Add Memberpress Pro integration.
-		if ( \is_plugin_active( 'memberpress/memberpress.php' ) ) {
+		if ( \class_exists( '\MeprBaseCtrl' ) ) {
 			if ( isset( $_POST['sgc2facode'] ) || isset( $_POST['sgc2fabackupcode'] ) ) { //phpcs:ignore
 				add_action( 'init', array( $this->sg_2fa, 'validate_2fa_login' ) );
 				add_action( 'init', array( $this->sg_2fa, 'validate_2fabc_login' ) );

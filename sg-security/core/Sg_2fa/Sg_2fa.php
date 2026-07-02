@@ -365,6 +365,7 @@ class Sg_2fa {
 				'redirect_to'   => isset( $_REQUEST['redirect_to'] ) ? esc_url_raw( wp_unslash( $_REQUEST['redirect_to'] ) ) : admin_url(), // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 				'rememberme'    => ( ! empty( $_REQUEST['rememberme'] ) ) ? true : false, // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 				'is_wp_login'   => false,
+				'sg_security_2fa_do_not_challenge' => apply_filters( 'sg_security_2fa_do_not_challenge', true ),
 			)
 		);
 	}
@@ -448,13 +449,19 @@ class Sg_2fa {
 			return false;
 		}
 
+		// Bail if the 'do not challenge' filter is set to false.
+		if ( ! apply_filters( 'sg_security_2fa_do_not_challenge', true ) ) {
+			return false;
+		}
+
 		// Parse the cookie.
 		$cookie_data = explode( '|', $_COOKIE[ $sg_2fa_user_cookie ] );
 
 		if (
 			// If the 2FA is configured for the user.
 			1 == get_user_meta( $cookie_data[0], 'sg_security_2fa_configured', true ) && // phpcs:ignore
-			get_user_meta( $cookie_data[0], 'sgs_2fa_dnc_token', true ) === $cookie_data[1] // If there is already a cookie with that name and the name matches.
+			get_user_meta( $cookie_data[0], 'sgs_2fa_dnc_token', true ) === $cookie_data[1]  && // If there is already a cookie with that name and the name matches.
+			(int) $cookie_data[0] === (int) $user->ID // If the cookie ID matches the logging in user ID.
 		) {
 			return true;
 		}
@@ -527,7 +534,12 @@ class Sg_2fa {
 	 * @param  string $user_login The username.
 	 * @param  object $user       WP_User object.
 	 */
-	public function init_2fa( $user_login, $user ) {
+	public function init_2fa( $user_login = null, $user = null ) {
+		// Bail, if the parameters are not provided correctly.
+		if ( false === $this->check_wp_login_params( $user_login, $user ) ) {
+			return;
+		}
+
 		// Bail if the user role does not allow 2FA setup.
 		if ( empty( array_intersect( $this->get_admin_user_roles(), $user->roles ) ) ) {
 			return;
@@ -975,5 +987,60 @@ class Sg_2fa {
 
 		// Move the file back to the original location.
 		$wp_filesystem->move( WP_PLUGIN_DIR . '/sg-security/sgs_encrypt_key.php', $this->encryption_key_file );
+	}
+
+	/**
+	 * Checks if the correct 'wp_login' parameters are provided.
+	 *
+	 * @param  string $user_login The username.
+	 * @param  object $user       WP_User object.
+	 *
+	 * @return bool False if incorrect parameters are provided, true if they are correct.
+	 */
+	public function check_wp_login_params( &$user_login, &$user ) {
+		// If we have only WP_User object and no username, recover the username and continue the login.
+		if ( empty( $user_login ) && $user instanceof \WP_User ) {
+			// If its admin user trying to log in with broken parameters, bail.
+			if ( ! empty( array_intersect( $this->get_admin_user_roles(), $user->roles ) ) ) {
+				wp_clear_auth_cookie();
+				wp_set_current_user( 0 );
+				return false;
+			}
+
+			// Recover the username.
+			$user_login = $user->user_login;
+		}
+
+		$maybe_user = null;
+
+		// If we have username but no WP_User object, recover the object.
+		if ( ! ( $user instanceof \WP_User ) && ! empty( $user_login ) ) {
+			$maybe_user = get_user_by( 'login', $user_login );
+
+			// Guard against, runtime created user, that is not yet in the DB.
+			if ( ! $maybe_user && is_user_logged_in() ) {
+				$maybe_user = wp_get_current_user();
+			}
+
+			// If its admin user trying to log in with broken parameters, bail.
+			if ( $maybe_user instanceof \WP_User ) {
+				if ( ! empty( array_intersect( $this->get_admin_user_roles(), $maybe_user->roles ) ) ) {
+					wp_clear_auth_cookie();
+					wp_set_current_user( 0 );
+					return false;
+				}
+			}
+
+			// If the user is not admin, but was missing, assign it.
+			$user = $maybe_user;
+		}
+
+		// Bail, if still broken at this point.
+		if ( empty( $user_login ) || ! ( $user instanceof \WP_User ) ) {
+			return false;
+		}
+
+		// All checks are passed.
+		return true;
 	}
 }

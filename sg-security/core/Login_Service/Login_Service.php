@@ -42,7 +42,9 @@ class Login_Service {
 	 */
 	public function restrict_login_to_ips() {
 		// Bail if the user is trying to access password protected page.
-		if ( isset( $_POST['post_password'] ) && ! is_admin() ) { //phpcs:ignore
+		$action = isset( $_GET['action'] ) ? sanitize_key( wp_unslash( $_GET['action'] ) ) : '';
+
+		if ( isset( $_POST['post_password'] ) && ! is_admin() && 'postpass' === $action ) { //phpcs:ignore
 			return true;
 		}
 
@@ -95,6 +97,12 @@ class Login_Service {
 
 		// Bail if ip, has reached login attempts limit.
 		if ( $login_attempts[ $user_ip ]['timestamp'] > time() ) {
+
+			// Store the time when the block occurred.
+			if ( empty( $login_attempts[ $user_ip ]['blocked_at'] ) ) {
+				$login_attempts[ $user_ip ]['blocked_at'] = time();
+				update_option( 'sg_security_unsuccessful_login', $login_attempts );
+			}
 
 			// Update the total blocked logins counter.
 			update_option( 'sg_security_total_blocked_logins', get_option( 'sg_security_total_blocked_logins', 0 ) + 1 );

@@ -7,7 +7,7 @@ namespace Composer\Autoload;
 class ComposerStaticInitc293d1e978bd19a1e0aed5fa8f47c860
 {
     public static $prefixLengthsPsr4 = array (
-        'S' => 
+        'S' =>
         array (
             'SiteGround_i18n\\' => 16,
             'SiteGround_Helper\\' => 18,
@@ -15,12 +15,12 @@ class ComposerStaticInitc293d1e978bd19a1e0aed5fa8f47c860
             'SiteGround_Data\\' => 16,
             'SG_Security\\' => 12,
         ),
-        'P' => 
+        'P' =>
         array (
             'PragmaRX\\Recovery\\' => 18,
             'PragmaRX\\Random\\' => 16,
         ),
-        'C' => 
+        'C' =>
         array (
             'Composer\\Installers\\' => 20,
             'CharlesRumley\\Tests\\' => 20,
@@ -29,52 +29,52 @@ class ComposerStaticInitc293d1e978bd19a1e0aed5fa8f47c860
     );
 
     public static $prefixDirsPsr4 = array (
-        'SiteGround_i18n\\' => 
+        'SiteGround_i18n\\' =>
         array (
             0 => __DIR__ . '/..' . '/siteground/siteground-i18n/src',
         ),
-        'SiteGround_Helper\\' => 
+        'SiteGround_Helper\\' =>
         array (
             0 => __DIR__ . '/..' . '/siteground/siteground-helper/src',
         ),
-        'SiteGround_Emails\\' => 
+        'SiteGround_Emails\\' =>
         array (
             0 => __DIR__ . '/..' . '/siteground/siteground-emails/src',
         ),
-        'SiteGround_Data\\' => 
+        'SiteGround_Data\\' =>
         array (
             0 => __DIR__ . '/..' . '/siteground/siteground-data/src',
         ),
-        'SG_Security\\' => 
+        'SG_Security\\' =>
         array (
             0 => __DIR__ . '/../..' . '/core',
         ),
-        'PragmaRX\\Recovery\\' => 
+        'PragmaRX\\Recovery\\' =>
         array (
             0 => __DIR__ . '/..' . '/pragmarx/recovery/src',
         ),
-        'PragmaRX\\Random\\' => 
+        'PragmaRX\\Random\\' =>
         array (
             0 => __DIR__ . '/..' . '/pragmarx/random/src',
         ),
-        'Composer\\Installers\\' => 
+        'Composer\\Installers\\' =>
         array (
             0 => __DIR__ . '/..' . '/composer/installers/src/Composer/Installers',
         ),
-        'CharlesRumley\\Tests\\' => 
+        'CharlesRumley\\Tests\\' =>
         array (
             0 => __DIR__ . '/..' . '/charles-rumley/php-po-to-json/tests',
         ),
-        'CharlesRumley\\' => 
+        'CharlesRumley\\' =>
         array (
             0 => __DIR__ . '/..' . '/charles-rumley/php-po-to-json/src',
         ),
     );
 
     public static $prefixesPsr0 = array (
-        'S' => 
+        'S' =>
         array (
-            'Sepia' => 
+            'Sepia' =>
             array (
                 0 => __DIR__ . '/..' . '/sepia/po-parser/src',
             ),

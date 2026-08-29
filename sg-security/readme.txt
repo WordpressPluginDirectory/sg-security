@@ -4,7 +4,7 @@ Tags: security, firewall, malware scanner, web application firewall, login
 Requires at least: 4.7
 Tested up to: 7.1
 Requires PHP: 7.0
-Stable tag: 1.6.6
+Stable tag: 1.6.8
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -143,6 +143,16 @@ By enforcing a password reset, you can ensure that all users are prompted to cha
 1. Go to Plugins -> Installed Plugins and click the 'Activate' link under the WordPress Security Optimizer by SiteGround listing
 
 == Changelog ==
+= Version 1.6.8 =
+Release Date Aug 28th, 2026
+
+* Fix issues with vendor library
+
+= Version 1.6.7 =
+Release Date Aug 28th, 2026
+
+* Security Improvements
+
 = Version 1.6.6 =
 Release Date Aug 26th, 2026
 

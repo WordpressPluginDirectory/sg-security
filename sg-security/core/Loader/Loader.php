@@ -339,6 +339,7 @@ class Loader {
 
 		add_action( 'wp_login', array( $this->sg_2fa, 'move_encryption_file' ), 9, 2 );
 		add_action( 'wp_login', array( $this->sg_2fa, 'init_2fa' ), 10, 2 );
+		add_filter( 'authenticate', array( $this->sg_2fa, 'block_xmlrpc_for_2fa_users' ), 99, 1 );
 		add_action( 'login_form_sgs2fa', array( $this->sg_2fa, 'validate_2fa_login' ) );
 		add_action( 'login_form_sgs2fabc', array( $this->sg_2fa, 'validate_2fabc_login' ) );
 		add_action( 'login_form_load_sgs2fabc', array( $this->sg_2fa, 'load_backup_codes_form' ) );
